@@ -1,7 +1,9 @@
-# To Setup
+# The Aidrop Collectooor
+![airdrop collectooor meme](./img/airdrop-collectooor.jpg)
+## To Setup
 `npm install`
 
-# To run
+## To run
 Creates n wallets
 `npx ts-node src/index.ts create-wallets 1`
 
