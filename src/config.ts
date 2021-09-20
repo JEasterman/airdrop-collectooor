@@ -1,12 +1,7 @@
-
-class Config {
-  numWallets: number
+interface Config {
+  amount?: number
+  numWallets?: number
   walletsDir: string
-
-  constructor(numWallets: number, walletsDir: string) {
-    this.numWallets = numWallets
-    this.walletsDir = walletsDir
-  }
 }
 
 export default Config
