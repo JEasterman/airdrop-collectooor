@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
     "ethers": "^5.4.7",
     "yargs": "^17.1.1"
   }
