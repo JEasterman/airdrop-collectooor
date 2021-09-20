@@ -2,7 +2,10 @@
 
 import fs = require('fs')
 import * as yargs from 'yargs'
+import { ethers } from 'ethers'
+
 import Config from './config'
+import Funder from './funder'
 import { WalletGenerator, Keypair } from './wallet'
 
 function main() {
@@ -23,7 +26,7 @@ function main() {
             default: './wallets',
             description: 'Directory to save wallets'
           }),
-      (args) => createWallets({ numWallets: args.n, walletsDir: args.walletsDir })
+      (args) => createWallets(new Config({ numWallets: args.n, walletsDir: args.walletsDir }))
     )
     .command(
       'fund-wallets <amount>',
@@ -41,7 +44,7 @@ function main() {
             default: './wallets',
             description: 'Directory to save wallets'
           }),
-      (args) => fundWallets({ amount: args.amount, walletsDir: args.walletsDir })
+      (args) => fundWallets(new Config({ amount: args.amount, walletsDir: args.walletsDir }))
     )
     .argv
 }
@@ -62,8 +65,27 @@ function createWallets(config: Config) {
 }
 
 function fundWallets(config: Config) {
-  // TODO
+  if (config.amount! <= 0) {
+    console.error('Must specify positive number of ETH')
+    process.exit(1)
+  }
+
+  try {
+    config.parseEnvVars()
+  } catch (e) {
+    console.error(e)
+    process.exit(1)
+  }
+
   console.log(`Funding wallets in ${config.walletsDir} with ${config.amount} ETH`)
+
+  const wallets = Keypair.loadWalletsFromDisk(config.walletsDir)
+  console.log(wallets)
+
+  const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl!)
+  const fundingWallet = ethers.Wallet.fromMnemonic(config.mnemonic!).connect(provider)
+  const funder = new Funder(fundingWallet)
+  // wallets.forEach(wallet => funder.fundWallet(wallet, config.amount!))
 }
 
 main()

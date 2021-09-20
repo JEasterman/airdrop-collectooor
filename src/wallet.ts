@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, Wallet } from 'ethers'
 import fs = require('fs')
 import crypto = require('crypto')
 
@@ -23,11 +23,20 @@ class Keypair {
     this.privateKey = privateKey
   }
 
+  public static fromJson(json: string): Keypair {
+    const { address, privateKey } = JSON.parse(json)
+    return new Keypair(address, privateKey)
+  }
+
   private toJson(): string {
     return JSON.stringify({
       address: this.address,
       privateKey: this.privateKey,
     })
+  }
+
+  public toWallet(): Wallet {
+    return new Wallet(this.privateKey)
   }
 
   public saveToDisk(filepath: string) {
@@ -47,6 +56,14 @@ class Keypair {
         console.log(`Wrote keypair to disk at ${filepath}`)
       }
     })
+  }
+
+  public static loadWalletsFromDisk(dirPath: string): Wallet[] {
+    return fs.readdirSync(dirPath)
+      .filter(file => file.match(new RegExp(/\d+/)))
+      .map(file => fs.readFileSync(`${dirPath}/${file}`).toString())
+      .map(json => Keypair.fromJson(json))
+      .map(keypair => keypair.toWallet())
   }
 }
 
