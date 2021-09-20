@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@types/yargs": "^17.0.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "ethers": "^5.4.7",
+    "yargs": "^17.1.1"
+  }
+}
